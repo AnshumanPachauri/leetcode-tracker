@@ -24,9 +24,11 @@ public class LeetCodeScheduler {
             LoggerFactory.getLogger(LeetCodeScheduler.class);
 	
 //	@Scheduled(cron = "0 59 23 * * ?")
-	@Scheduled(cron = "0 0 * * * ?")
+//	@Scheduled(cron = "0 0 * * * ?")
+	@Scheduled(cron = "0 * * * * ?", zone = "Asia/Kolkata")
 	public void scheduleDailyLeetcodeprogress() {
 		
+		log.info("Scheduler started for username={}", username);
 		System.out.println("Scheduler is Running daily LeetCode tracker...");
 		
 		log.info("Scheduler is Running daily LeetCode tracker...");
@@ -35,7 +37,11 @@ public class LeetCodeScheduler {
 		
 		try {
 			activityService.saveDailyUpdate(username);
+			log.info("Daily update saved successfully for username={}", username);
+			
 			whatsAppService.sendDailySummary(username);
+			log.info("WhatsApp summary sent successfully for username={}", username);
+			
 			log.info("Scheduler Job is done...");
 	    }
 	    catch(Exception e){

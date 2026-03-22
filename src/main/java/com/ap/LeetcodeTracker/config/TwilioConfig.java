@@ -18,8 +18,8 @@ public class TwilioConfig {
 	
     @PostConstruct
     public void initTwilio() {
-		System.out.println("TWILIO_ACCOUNT_SID = " + accountSid);
-        System.out.println("TWILIO_AUTH_TOKEN present = " + !("NOT_FOUND".equals(authToken)));
+    	System.out.println("TWILIO_ACCOUNT_SID = " + accountSid);
+    	System.out.println("TWILIO_AUTH_TOKEN present = " + (authToken != null && !authToken.isBlank()));
         Twilio.init(accountSid, authToken);
     }
 	

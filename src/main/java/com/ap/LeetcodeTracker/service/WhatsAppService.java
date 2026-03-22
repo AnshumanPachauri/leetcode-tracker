@@ -1,8 +1,10 @@
 package com.ap.LeetcodeTracker.service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import com.twilio.type.PhoneNumber;
 @Service
 public class WhatsAppService {
 
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger(WhatsAppService.class);
+	
     @Value("${twilio.whatsapp-from}")
     private String fromNumber;
 
@@ -25,10 +29,13 @@ public class WhatsAppService {
     private ActivityRepository activityRepository;
 
     public void sendDailySummary(String username) {
+    	LocalDate indiaDate = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+        log.info("Preparing WhatsApp summary for username={} and indiaDate={}", username, indiaDate);
         Optional<TrackerEntity> optionalData =
-                activityRepository.findByDateAndUsername(LocalDate.now(), username);
+                activityRepository.findByDateAndUsername(indiaDate, username);
 
         if (optionalData.isEmpty()) {
+        	log.error("No activity found for username={} on date={}", username, indiaDate);
             throw new RuntimeException("No activity found for today for username: " + username);
         }
 
@@ -44,11 +51,12 @@ public class WhatsAppService {
                 "Easy: " + data.getEasyCount() + "\n" +
                 "Medium: " + data.getMediumCount() + "\n" +
                 "Hard: " + data.getHardCount();
-
-        Message.creator(
+        log.info("Sending WhatsApp message. From={} To={}", fromNumber, toNumber);
+        Message message = Message.creator(
                 new PhoneNumber(toNumber),
                 new PhoneNumber(fromNumber),
                 messageBody
         ).create();
+        log.info("WhatsApp message sent successfully. SID={}", message.getSid());
     }
 }

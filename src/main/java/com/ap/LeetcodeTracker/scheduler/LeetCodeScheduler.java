@@ -25,7 +25,7 @@ public class LeetCodeScheduler {
 	
 //	@Scheduled(cron = "0 59 23 * * ?")
 //	@Scheduled(cron = "0 0 * * * ?")
-	@Scheduled(cron = "0 0 * * * ?", zone = "Asia/Kolkata")
+	@Scheduled(cron = "0 59 23 * * ?", zone = "Asia/Kolkata")
 	public void scheduleDailyLeetcodeprogress() {
 		
 		log.info("Scheduler started for username={}", username);
